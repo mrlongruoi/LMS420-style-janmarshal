@@ -17,8 +17,8 @@ const navigationItems = [
 export default function Navbar() {
   const { data: session, isPending } = authClient.useSession();
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-[backdrop-filter]:bg-background/60">
-      <div className="container flex min-h-16 items-center mx-auto px-4 md:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="flex min-h-16 items-center px-4">
         <Link href="/" className="flex items-center space-x-2 mr-4">
           <Image src={Logo} alt="Logo" className="size-9" />
           <span className="font-bold">MrlongLMS.</span>
@@ -40,9 +40,9 @@ export default function Navbar() {
             <ThemeToggle />
             {isPending ? null : session ? (
               <UserDropdown
-              email={session.user.email}
-              image={session.user.image || ""}
-              name={session.user.name}
+                email={session.user.email}
+                image={session.user.image || ""}
+                name={session.user.name}
               />
             ) : (
               <>
@@ -50,10 +50,10 @@ export default function Navbar() {
                   href="/login"
                   className={buttonVariants({ variant: "secondary" })}
                 >
-                  Login
+                  Đăng nhập
                 </Link>
                 <Link href="/login" className={buttonVariants()}>
-                  Get Started
+                  Bắt đầu
                 </Link>
               </>
             )}

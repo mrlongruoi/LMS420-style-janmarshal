@@ -31,13 +31,13 @@ export default function AuthLayout({
         </Link>
         {children}
         <div className="text-balance text-center text-xs text-muted-foreground">
-          By clicking continue, you agree to our{" "}
+          Bằng cách nhấp vào tiếp tục, bạn đồng ý với{" "}
           <span className="hover:text-primary hover:underline">
-            Terms of service
+            Điều khoản dịch vụ
           </span>{" "}
-          and{" "}
+          và{" "}
           <span className="hover:text-primary hover:underline">
-            Privacy Policy
+            Chính sách bảo mật
           </span>
           .
         </div>

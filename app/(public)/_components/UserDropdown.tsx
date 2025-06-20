@@ -36,10 +36,10 @@ export function UserDropdown({name, email, image} : iAppProps) {
       fetchOptions: {
         onSuccess: () => {
           router.push("/");
-          toast.success("Singed out successfully");
+          toast.success("Đăng xuất thành công");
         },
         onError: () => {
-          toast.error("Failed to sign out");
+          toast.error("Đăng xuất thất bại");
         },
       },
     });
@@ -74,13 +74,13 @@ export function UserDropdown({name, email, image} : iAppProps) {
           <DropdownMenuItem asChild>
             <Link href="/">
               <Home size={16} className="opacity-60" aria-hidden="true" />
-              <span>Home</span>
+              <span>Trang chủ</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/courses">
               <BookOpen size={16} className="opacity-60" aria-hidden="true" />
-              <span>Courses</span>
+              <span>Khóa học</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
@@ -90,14 +90,14 @@ export function UserDropdown({name, email, image} : iAppProps) {
                 className="opacity-60"
                 aria-hidden="true"
               />
-              <span>Dashboard</span>
+              <span>Bảng điều khiển</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut}>
           <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
-          <span>Logout</span>
+          <span>Đăng xuất</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

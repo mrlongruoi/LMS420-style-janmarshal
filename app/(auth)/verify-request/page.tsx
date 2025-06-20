@@ -33,11 +33,11 @@ export default function VerifyRequest() {
         otp: otp,
         fetchOptions: {
           onSuccess: () => {
-            toast.success("Email verified");
+            toast.success("Email đã xác minh");
             router.push("/");
           },
           onError: () => {
-            toast.error("Error verifying Email/OTP");
+            toast.error("Lỗi xác minh Email/OTP");
           },
         },
       });
@@ -46,10 +46,12 @@ export default function VerifyRequest() {
   return (
     <Card className="w-full mx-auto">
       <CardHeader className="text-center">
-        <CardTitle className="text-xl">Please check your email</CardTitle>
+        <CardTitle className="text-xl">
+          Vui lòng kiểm tra email của bạn
+        </CardTitle>
         <CardDescription>
-          We have sent a verification code to your email address. Please open
-          the email and paste the code below.
+          Chúng tôi đã gửi mã xác minh đến địa chỉ email của bạn. Vui lòng mở
+          email và dán mã bên dưới.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -83,10 +85,10 @@ export default function VerifyRequest() {
           {emailPending ? (
             <>
               <Loader2 className="size-4 animate-spin" />
-              <span>Loading...</span>
+              <span>Đang tải...</span>
             </>
           ) : (
-            "Verify Account"
+            "Xác minh tài khoản"
           )}
         </Button>
       </CardContent>
