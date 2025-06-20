@@ -59,7 +59,7 @@ export function LoginForm() {
       <CardHeader>
         <CardTitle className="text-xl">Chào mừng bạn trở lại!</CardTitle>
         <CardDescription>
-          Đăng nhập bằng tài khoản Email Github của bạn
+          Đăng nhập bằng Email hoặc tài khoản GitHub của bạn
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
