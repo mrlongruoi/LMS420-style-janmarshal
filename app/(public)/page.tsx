@@ -91,7 +91,7 @@ export default function Home() {
         {features.map((feature, index) => (
           <Card key={index} className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <div className="text-4xl md-4">{feature.icon}</div>
+              <div className="text-4xl mb-4">{feature.icon}</div>
               <CardTitle>{feature.title}</CardTitle>
             </CardHeader>
             <CardContent>
