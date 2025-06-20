@@ -28,10 +28,10 @@ export function LoginForm() {
         callbackURL: "/",
         fetchOptions: {
           onSuccess: () => {
-            toast.success("Singed in with Github, you will be redirected...");
+            toast.success("Đăng nhập bằng Github, bạn sẽ được chuyển hướng...");
           },
           onError: () => {
-            toast.error("Internal Server Error");
+            toast.error("Lỗi máy chủ nội bộ");
           },
         },
       });
@@ -44,11 +44,11 @@ export function LoginForm() {
         type: "sign-in",
         fetchOptions: {
           onSuccess: () => {
-            toast.success("Email Sent");
+            toast.success("Email đã gửi");
             router.push(`/verify-request?email=${email}`);
           },
           onError: () => {
-            toast.error("Error sending email");
+            toast.error("Lỗi gửi email");
           },
         },
       });
@@ -57,8 +57,10 @@ export function LoginForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Welcome Back!</CardTitle>
-        <CardDescription>Login with your Github Email Account</CardDescription>
+        <CardTitle className="text-xl">Chào mừng bạn trở lại!</CardTitle>
+        <CardDescription>
+          Đăng nhập bằng Email hoặc tài khoản GitHub của bạn
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         <Button
@@ -70,18 +72,18 @@ export function LoginForm() {
           {githubPending ? (
             <>
               <Loader className="size-4 animate-spin" />
-              <span>Loading...</span>
+              <span>Đang tải...</span>
             </>
           ) : (
             <>
               <GithubIcon className="size-4" />
-              Sign in with Github
+              Đăng nhập bằng Github
             </>
           )}
         </Button>
         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
           <span className="relative z-10 bg-card px-2 text-muted-foreground">
-            Or continue with
+            Hoặc tiếp tục với
           </span>
         </div>
         <div className="grid gap-3">
@@ -99,12 +101,12 @@ export function LoginForm() {
             {emailPending ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
-                <span>Loading...</span>
+                <span>Đang tải...</span>
               </>
             ) : (
               <>
-                <Send className="size-4"/>
-                <span>Continue with Email</span>
+                <Send className="size-4" />
+                <span>Tiếp tục với Email</span>
               </>
             )}
           </Button>

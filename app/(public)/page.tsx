@@ -1,10 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { buttonVariants } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -16,55 +13,44 @@ interface featureProps {
 
 const features: featureProps[] = [
   {
-    title: "Comprehensive Courses",
+    title: "Các khóa học toàn diện",
     description:
-      "Access a wide range of carefully curated courses designed by industry experts.",
+      "Truy cập một loạt các khóa học được quản lý cẩn thận được thiết kế bởi các chuyên gia trong ngành.",
     icon: "📚",
   },
   {
-    title: "Interactive Learning",
+    title: "Học tập tương tác",
     description:
-      "Engage with interactive content, quizzes, and assignments to enhance your learning experience.",
+      "Tham gia vào nội dung tương tác, câu đố và bài tập để nâng cao trải nghiệm học tập của bạn.",
     icon: "🎮",
   },
   {
-    title: "Progress Tracking",
+    title: "Theo dõi tiến độ",
     description:
-      "Monitor your progress and achievements with detailed analytics and personalized dashboards.",
+      "Theo dõi tiến trình và thành tích của bạn với phân tích chi tiết và bảng điều khiển cá nhân hóa.",
     icon: "📈",
   },
   {
-    title: "Community Support",
+    title: "Hỗ trợ cộng đồng",
     description:
-      "Join a vibrant community of learners and instructors to collaborate and share knowledge.",
+      "Tham gia vào một cộng đồng sôi nổi của những người học và giảng viên để hợp tác và chia sẻ kiến thức.",
     icon: "👥",
   },
 ];
 
 export default function Home() {
-  const router = useRouter();
-  const { data: session } = authClient.useSession();
-  async function signOut() {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/");
-          toast.success("Singed out successfully");
-        },
-      },
-    });
-  }
   return (
     <>
       <section className="relative py-20">
         <div className="flex flex-col items-center text-center space-y-8">
-          <Badge variant="outline">The Future of Online Education</Badge>
+          <Badge variant="outline">Tương lai của giáo dục trực tuyến</Badge>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-            Elevate your Learning Experience
+            Nâng cao kinh nghiệm học tập của bạn
           </h1>
           <p className="max-w-[700px] text-muted-foreground md:text-xl">
-            Discover a new way to learn with our modern, interactive learning
-            management system. Access high-quality courses anytime, anywhere.
+            Khám phá một cách mới để học với học tập tương tác hiện đại của
+            chúng tôi Hệ thống quản lý.Truy cập các khóa học chất lượng cao mọi
+            lúc, mọi nơi.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <Link
@@ -73,7 +59,7 @@ export default function Home() {
               })}
               href="/courses"
             >
-              Explore Courses
+              Khám phá các khóa học
             </Link>
             <Link
               className={buttonVariants({
@@ -82,12 +68,12 @@ export default function Home() {
               })}
               href="/login"
             >
-              Sign In
+              Đăng nhập
             </Link>
           </div>
         </div>
       </section>
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-32">
         {features.map((feature, index) => (
           <Card key={index} className="hover:shadow-lg transition-shadow">
             <CardHeader>
