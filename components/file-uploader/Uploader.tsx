@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { FileRejection, useDropzone } from "react-dropzone";
 import { Card, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";
-import { RenderEmptyState } from "./RenderState";
+import { RenderEmptyState, RenderErrorState, RenderUploadedState, RenderUploadingState } from "./RenderState";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 
@@ -49,6 +49,7 @@ export function Uploader() {
           isImage: true,
         }),
       });
+
       if (!presignedUrlResponse.ok) {
         toast.error("Failed to get presigned URL");
         setFileState((prev) => ({
@@ -59,31 +60,56 @@ export function Uploader() {
         }));
         return;
       }
-      const { presignedUrl, key } = await presignedUrlResponse.json();
-      await new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-        // xhr.upload.onprogress = (event) => {
-        //   if (event.lengthComputable) {
-        //     const progress = Math.round((event.loaded / event.total) * 100);
-        //     setFileState((prev) => ({
-        //       ...prev,
-        //       progress,
-        //     }));
-        //   }
-        // };
 
-        // xhr.onload = () => {
-        //   if (xhr.status === 200) {
-        //     resolve(true);
-        //   } else {
-        //     reject(new Error("Upload failed"));
-        //   }
-        // };
-        
-        // xhr.onerror = () => reject(new Error("Upload failed"));
-        // xhr.send(file);
-      })
-    } catch {}
+      const { presignedUrl, key } = await presignedUrlResponse.json();
+
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percentageCompleted = (event.loaded / event.total) * 100;
+            setFileState((prev) => ({
+              ...prev,
+              progress: Math.round(percentageCompleted),
+            }));
+          }
+        };
+
+        xhr.onload = () => {
+          if (xhr.status === 200 || xhr.status === 204) {
+            setFileState((prev) => ({
+              ...prev,
+              progress: 100,
+              uploading: false,
+              key: key,
+            }));
+            toast.success("File uploaded successfully");
+            resolve();
+          } else {
+            reject(new Error("Upload failed..."));
+          }
+
+          
+        };
+
+        xhr.onerror = () => {
+            reject(new Error("Upload failed"));
+          };
+          xhr.open("PUT", presignedUrl);
+          xhr.setRequestHeader("Content-Type", file.type);
+          xhr.send(file);
+      });
+    } catch {
+      toast.error("Something went wrong");
+
+      setFileState((prev) => ({
+        ...prev,
+        progress: 0,
+        error: true,
+        uploading: false,
+      }));
+    }
   }
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
@@ -100,6 +126,8 @@ export function Uploader() {
         isDeleting: false,
         fileType: "image",
       });
+
+      uploadFile(file);
     }
   }, []);
 
@@ -121,6 +149,28 @@ export function Uploader() {
         toast.error("Too many files selected, max is 1");
       }
     }
+  }
+
+  function renderContent () {
+    if (fileState.uploading) {
+      return (
+        <RenderUploadingState
+          progress={fileState.progress}
+          file={fileState.file as File}
+        />
+      )
+    }
+    if (fileState.error) {
+      return <RenderErrorState  />;
+    }
+    if(fileState.objectUrl) {
+      return (
+        <RenderUploadedState
+        previewUrl={fileState.objectUrl}
+        />
+      )
+    }
+    return <RenderEmptyState isDragActive={isDragActive} />;
   }
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -146,7 +196,7 @@ export function Uploader() {
     >
       <CardContent className="flex items-center justify-center h-full w-full p-4">
         <input {...getInputProps()} />
-        <RenderEmptyState isDragActive={isDragActive} />
+        {renderContent()}
       </CardContent>
     </Card>
   );
