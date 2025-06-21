@@ -3,7 +3,7 @@ export const courseLevels = ["Beginner", "Intermediate", "Advanced"] as const;
 export const courseStatus = ["Draft", "Published", "Archived"] as const;
 export const courseCategories = [
   'Development',
-  'Buisness',
+  'Business',
   'Finance',
   'IT & Software',
   'Office Productivity',
