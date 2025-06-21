@@ -6,89 +6,133 @@ import { Card, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";
 import { RenderEmptyState } from "./RenderState";
 import { toast } from "sonner";
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 interface UploaderState {
-    id: string | null;
-    file: File | null;
-    uploading: boolean;
-    progress: number;
-    key?: string;
-    isDeleting: boolean;
-    error: boolean;
-    objectUrl?: string;
-    fileType: "image" | "video";
+  id: string | null;
+  file: File | null;
+  uploading: boolean;
+  progress: number;
+  key?: string;
+  isDeleting: boolean;
+  error: boolean;
+  objectUrl?: string;
+  fileType: "image" | "video";
 }
 
 export function Uploader() {
+  const [fileState, setFileState] = useState<UploaderState>({
+    error: false,
+    file: null,
+    id: null,
+    uploading: false,
+    progress: 0,
+    isDeleting: false,
+    fileType: "image",
+  });
 
-    const [fileState, setFileState] = useState<UploaderState>({
-        error: false,
-        file: null,
-        id: null,
+  async function uploadFile(file: File) {
+    setFileState((prev) => ({
+      ...prev,
+      uploading: true,
+      progress: 0,
+    }));
+    try {
+      //1. Get presigned URL from the server
+      const presignedUrlResponse = await fetch("/api/s3/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: file.name,
+          contentType: file.type,
+          size: file.size,
+          isImage: true,
+        }),
+      });
+      if (!presignedUrlResponse.ok) {
+        toast.error("Failed to get presigned URL");
+        setFileState((prev) => ({
+          ...prev,
+          uploading: false,
+          progress: 0,
+          error: true,
+        }));
+        return;
+      }
+      const { presignedUrl, key } = await presignedUrlResponse.json();
+      await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        // xhr.upload.onprogress = (event) => {
+        //   if (event.lengthComputable) {
+        //     const progress = Math.round((event.loaded / event.total) * 100);
+        //     setFileState((prev) => ({
+        //       ...prev,
+        //       progress,
+        //     }));
+        //   }
+        // };
+
+        // xhr.onload = () => {
+        //   if (xhr.status === 200) {
+        //     resolve(true);
+        //   } else {
+        //     reject(new Error("Upload failed"));
+        //   }
+        // };
+        
+        // xhr.onerror = () => reject(new Error("Upload failed"));
+        // xhr.send(file);
+      })
+    } catch {}
+  }
+
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+
+      setFileState({
+        file: file,
         uploading: false,
         progress: 0,
+        objectUrl: URL.createObjectURL(file),
+        error: false,
+        id: uuidv4(),
         isDeleting: false,
         fileType: "image",
-    });
-
-    function uploadFile(file: File) {
-        setFileState((prev) => ({
-            ...prev,
-            uploading: true,
-            progress: 0,
-        }));
-        try {
-            
-        } catch {
-            
-        }
-    };
-
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        if(acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-
-            setFileState({
-                file: file,
-                uploading: false,
-                progress: 0,
-                objectUrl: URL.createObjectURL(file),
-                error: false,
-                id: uuidv4(),
-                isDeleting: false,
-                fileType: "image",
-            });
-        }
-     }, []);
+      });
+    }
+  }, []);
 
   function rejectedFiles(fileRejection: FileRejection[]) {
-    if(fileRejection.length) {
-        const tooManyFiles = fileRejection.find((rejection) => rejection.errors[0].code === 'too-many-files');
+    if (fileRejection.length) {
+      const tooManyFiles = fileRejection.find(
+        (rejection) => rejection.errors[0].code === "too-many-files"
+      );
 
-        const fileSizeToBig = fileRejection.find((rejection) => rejection.errors[0].code === 'file-too-large');
-        
-        if(fileSizeToBig) {
-            toast.error('File is too large, max size is 5MB')
-        }
+      const fileSizeToBig = fileRejection.find(
+        (rejection) => rejection.errors[0].code === "file-too-large"
+      );
 
-        if(tooManyFiles) {
-            toast.error('Too many files selected, max is 1')
-        }
+      if (fileSizeToBig) {
+        toast.error("File is too large, max size is 5MB");
+      }
 
+      if (tooManyFiles) {
+        toast.error("Too many files selected, max is 1");
+      }
     }
   }
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-        "image/*": [],
+      "image/*": [],
     },
     maxFiles: 1,
     multiple: false,
     maxSize: 5 * 1024 * 1024, // 5MB
     onDropRejected: rejectedFiles,
-   });
+  });
 
   return (
     <Card
