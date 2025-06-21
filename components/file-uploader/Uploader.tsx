@@ -1,6 +1,8 @@
 "use client";
 
+import { toast } from "sonner";
 import { useCallback, useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { FileRejection, useDropzone } from "react-dropzone";
 import { Card, CardContent } from "../ui/card";
 import { cn } from "@/lib/utils";
@@ -10,8 +12,6 @@ import {
   RenderUploadedState,
   RenderUploadingState,
 } from "./RenderState";
-import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
 
 interface UploaderState {
   id: string | null;

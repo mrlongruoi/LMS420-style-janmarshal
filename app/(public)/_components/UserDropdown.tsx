@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   BookOpen,
   ChevronDownIcon,
@@ -5,8 +6,7 @@ import {
   LayoutDashboardIcon,
   LogOutIcon,
 } from "lucide-react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSignOut } from "@/hooks/use-signout";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,8 +17,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
-import { useSignOut } from "@/hooks/use-signout";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 
 interface iAppProps {
   name: string;

@@ -1,6 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import slugify from "slugify";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTransition } from "react";
 import { ArrowLeft, Loader2, PlusIcon, SparkleIcon } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -10,7 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useForm } from "react-hook-form";
 import {
   courseCategories,
   courseLevels,
@@ -18,7 +23,6 @@ import {
   CourseSchemaType,
   courseStatus,
 } from "@/lib/zodSchemas";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -28,7 +32,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import slugify from "slugify";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -39,11 +42,8 @@ import {
 } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/rich-text-editor/Editor";
 import { Uploader } from "@/components/file-uploader/Uploader";
-import { useTransition } from "react";
 import { tryCatch } from "@/hooks/try-catch";
 import { CreateCourse } from "./actions";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 export default function CreateCoursePage() {
   const [pending, startTransition] = useTransition();

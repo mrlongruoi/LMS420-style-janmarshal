@@ -1,11 +1,3 @@
-import { type Editor } from "@tiptap/react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import { Toggle } from "../ui/toggle";
 import {
   AlignCenter,
   AlignLeft,
@@ -21,6 +13,14 @@ import {
   Strikethrough,
   Undo,
 } from "lucide-react";
+import { type Editor } from "@tiptap/react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import { Toggle } from "../ui/toggle";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 

@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { IconCirclePlusFilled, type Icon } from "@tabler/icons-react";
-
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
+
 
 export function NavMain({
   items,

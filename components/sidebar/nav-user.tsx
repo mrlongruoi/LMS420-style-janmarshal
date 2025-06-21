@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import {
   IconDashboard,
   IconDotsVertical,
   IconLogout,
 } from "@tabler/icons-react";
+import { HomeIcon, Tv2 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -23,8 +25,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
-import Link from "next/link";
-import { HomeIcon, Tv2 } from "lucide-react";
 import { useSignOut } from "@/hooks/use-signout";
 
 export function NavUser() {
