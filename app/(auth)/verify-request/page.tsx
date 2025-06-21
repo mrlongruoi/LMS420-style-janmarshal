@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useState, useTransition } from "react";
+import { Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react";
 
 export default function VerifyRequest() {
   const router = useRouter();

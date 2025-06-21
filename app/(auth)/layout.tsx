@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import Image from "next/image";
 import Logo from "@/public/logo.png"; // Adjust the path as necessary
 
 export default function AuthLayout({

@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import Image from "next/image"
 import * as React from "react"
 import {
   IconCamera,
@@ -27,8 +29,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import Link from "next/link"
-import Image from "next/image"
 
 const data = {
   navMain: [
