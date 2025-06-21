@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, PlusIcon, SparkleIcon } from "lucide-react";
+import { ArrowLeft, Loader2, PlusIcon, SparkleIcon } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -39,8 +39,15 @@ import {
 } from "@/components/ui/select";
 import { RichTextEditor } from "@/components/rich-text-editor/Editor";
 import { Uploader } from "@/components/file-uploader/Uploader";
+import { useTransition } from "react";
+import { tryCatch } from "@/hooks/try-catch";
+import { CreateCourse } from "./actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CreateCoursePage() {
+  const [pending, startTransition] = useTransition();
+  const router = useRouter();
   const form = useForm<CourseSchemaType>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
@@ -56,9 +63,25 @@ export default function CreateCoursePage() {
       smallDescription: "",
     },
   });
+
   function onSubmit(values: CourseSchemaType) {
-    console.log(values);
+    startTransition(async () => {
+      const { data: result, error } = await tryCatch(CreateCourse(values));
+      if (error) {
+        toast.error("An unexpected error occurred. Please try again.");
+        return;
+      }
+
+      if (result.status === "success") {
+        toast.success(result.message);
+        form.reset();
+        router.push("/admin/courses");
+      } else if (result.status === "error") {
+        toast.error(result.message);
+      }
+    });
   }
+
   return (
     <>
       <div className="flex items-center gap-4">
@@ -147,9 +170,7 @@ export default function CreateCoursePage() {
                   <FormItem className="w-full">
                     <FormLabel>Mô tả</FormLabel>
                     <FormControl>
-                      <RichTextEditor
-                        field={field}
-                      />
+                      <RichTextEditor field={field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -163,10 +184,7 @@ export default function CreateCoursePage() {
                   <FormItem className="w-full">
                     <FormLabel>Thumbnail Image</FormLabel>
                     <FormControl>
-                      <Uploader
-                      onChange={field.onChange}
-                      value={field.value}
-                      />
+                      <Uploader onChange={field.onChange} value={field.value} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -255,11 +273,7 @@ export default function CreateCoursePage() {
                     <FormItem className="w-full">
                       <FormLabel>Giá (VND)</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Giá"
-                          type="number"
-                          {...field}
-                        />
+                        <Input placeholder="Giá" type="number" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -268,36 +282,45 @@ export default function CreateCoursePage() {
               </div>
 
               <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>Trạng thái</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Chọn trạng thái" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {courseStatus.map((status) => (
-                            <SelectItem key={status} value={status}>
-                              {status}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Trạng thái</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Chọn trạng thái" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {courseStatus.map((status) => (
+                          <SelectItem key={status} value={status}>
+                            {status}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <Button>
+              <Button type="submit" disabled={pending}>
+                {pending ? (
+                  <>
+                    Tạo...
+                    <Loader2 className="animate-spin ml-1" />
+                  </>
+                ) : (
+                  <>
                     Tạo khóa học <PlusIcon className="ml-1" size={16} />
-                </Button>
+                  </>
+                )}
+              </Button>
             </form>
           </Form>
         </CardContent>
