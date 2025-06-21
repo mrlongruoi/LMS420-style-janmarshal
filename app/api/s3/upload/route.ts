@@ -8,7 +8,7 @@ import { S3 } from "@/lib/S3Client";
 
 export const fileUploadSchema = z.object({
   fileName: z.string().min(1, { message: "File name is required" }),
-  constentType: z.string().min(1, { message: "Content type is required" }),
+  contentType: z.string().min(1, { message: "Content type is required" }),
   size: z.number().min(1, { message: "Size is required" }),
   isImage: z.boolean(),
 });
@@ -23,11 +23,11 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    const { fileName, constentType, size } = validation.data;
+    const { fileName, contentType, size } = validation.data;
     const uniqueKey = `${uuidv4()}-${fileName}`;
     const command = new PutObjectCommand({
       Bucket: env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES,
-      ContentType: constentType,
+      ContentType: contentType,
       ContentLength: size,
       Key: uniqueKey,
     });
