@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/app/data/admin/require-admin";
 import arcjet, { detectBot, fixedWindow } from "@/lib/arcjet";
 import { prisma } from "@/lib/db";
@@ -41,7 +42,8 @@ export async function editCourse(
       } else {
         return {
           status: "error",
-          message: "Bạn là một bot!Nếu đây là một sai lầm, hãy liên hệ với hỗ trợ của chúng tôi",
+          message:
+            "Bạn là một bot! Nếu đây là một sai lầm, hãy liên hệ với hỗ trợ của chúng tôi",
         };
       }
     }
@@ -49,7 +51,7 @@ export async function editCourse(
     if (!result.success) {
       return {
         status: "error",
-        message: "Invalid data",
+        message: "Dữ liệu không hợp lệ",
       };
     }
 
@@ -71,6 +73,87 @@ export async function editCourse(
     return {
       status: "error",
       message: "Đã xảy ra lỗi bất ngờ",
+    };
+  }
+}
+
+export async function reorderLessons(
+  chapterId: string,
+  lessons: { id: string; position: number }[],
+  courseId: string
+): Promise<ApiResponse> {
+  await requireAdmin();
+  try {
+    if (!lessons || lessons.length === 0) {
+      return {
+        status: "error",
+        message: "Không có bài học được cung cấp để sắp xếp lại",
+      };
+    }
+
+    const updates = lessons.map((lesson) =>
+      prisma.lesson.update({
+        where: {
+          id: lesson.id,
+          chapterId: chapterId,
+        },
+        data: {
+          position: lesson.position,
+        },
+      })
+    );
+
+    await prisma.$transaction(updates);
+    revalidatePath(`/admin/courses/${courseId}/edit`);
+
+    return {
+      status: "success",
+      message: "Bài học sắp xếp lại thành công",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Không thể sắp xếp lại các bài học",
+    };
+  }
+}
+
+export async function reorderChapters(
+  courseId: string,
+  chapters: { id: string; position: number }[]
+): Promise<ApiResponse> {
+  await requireAdmin();
+  try {
+    if (!chapters || chapters.length === 0) {
+      return {
+        status: "error",
+        message: "Không có chương nào được cung cấp để sắp xếp lại.",
+      };
+    }
+
+    const updates = chapters.map((chapter) =>
+      prisma.chapter.update({
+        where: {
+          id: chapter.id,
+          courseId: courseId,
+        },
+        data: {
+          position: chapter.position,
+        },
+      })
+    );
+
+    await prisma.$transaction(updates);
+    revalidatePath(`/admin/courses/${courseId}/edit`);
+
+    return {
+      status: "success",
+      message: "Các chương sắp xếp lại thành công",
+    };
+  } catch {
+    return {
+      status: "error",
+      message: "Không thể sắp xếp lại các chương",
     };
   }
 }
