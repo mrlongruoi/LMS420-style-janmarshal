@@ -11,6 +11,7 @@ import {
   courseSchema,
   CourseSchemaType,
   lessonSchema,
+  LessonSchemaType,
 } from "@/lib/zodSchemas";
 import { request } from "@arcjet/next";
 
@@ -213,7 +214,7 @@ export async function createChapter(
 }
 
 export async function createLesson(
-  values: ChapterSchemaType
+  values: LessonSchemaType
 ): Promise<ApiResponse> {
   await requireAdmin();
   try {
@@ -334,7 +335,7 @@ export async function deleteLesson({
     revalidatePath(`/admin/courses/${courseId}/edit`);
     return {
       status: "success",
-      message: "Xóa bài học thành cong",
+      message: "Xóa bài học thành công",
     };
   } catch {
     return {
